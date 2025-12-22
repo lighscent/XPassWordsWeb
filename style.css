@@ -71,6 +71,12 @@ body {
     gap: 10px;
 }
 
+.app-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
 .brand h1 {
     margin: 0;
     font-size: 1.6rem;
