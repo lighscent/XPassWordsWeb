@@ -1,0 +1,18 @@
+{
+    "title": "XPassWords Generator",
+    "open_source": "Projet Open Source",
+    "trans_note": "Traductions imparfaites. Contribuez !",
+    "config_title": "CONFIGURATION",
+    "length": "Longueur :",
+    "include_upper": "Inclure Majuscules",
+    "include_numbers": "Inclure Chiffres",
+    "include_symbols": "Inclure Symboles",
+    "avoid_ambiguous": "Éviter ambigus (1, l, O...)",
+    "no_start_symbol": "Ne pas commencer par un symbole",
+    "advanced_settings": "Paramètres Avancés",
+    "custom_chars_desc": "Modifier les jeux de caractères :",
+    "save_prefs": "Sauvegarder mes préférences",
+    "output_title": "MOT DE PASSE GÉNÉRÉ",
+    "btn_generate": "GÉNÉRER",
+    "btn_copy": "COPIER"
+}

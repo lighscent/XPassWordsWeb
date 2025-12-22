@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>XPassWords - Secure Open Source Password Generator</title>
+    <meta
+      name="description"
+      content="Generate strong, secure, and random passwords locally in your browser. XPassWords is a free, open-source tool with advanced customization options."
+    />
+    <meta
+      name="keywords"
+      content="password generator, secure password, random password, générateur mot de passe, open source, security tool, strong password"
+    />
+    <meta name="author" content="XPassWords Team" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://xpassword.0x2.fun/" />
+
+    <meta
+      property="og:title"
+      content="XPassWords - Secure Password Generator"
+    />
+    <meta
+      property="og:description"
+      content="Generate strong passwords instantly. 100% Client-side & Open Source."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xpassword.0x2.fun/" />
+    <meta property="og:image" content="https://xpassword.0x2.fun/preview.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "XPassWords Generator",
+        "operatingSystem": "Web",
+        "applicationCategory": "SecurityApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "A free and open-source strong password generator running entirely in the browser."
+      }
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="dark-mode">
+    <div class="app-wrapper">
+      <header class="app-header">
+        <div class="brand-group">
+          <div class="brand">
+            <h1>XPassWords</h1>
+            <span id="app-version" class="version-badge">Loading...</span>
+          </div>
+          <a
+            href="https://github.com/lighscent/XPassWordsWeb"
+            target="_blank"
+            class="opensource-badge"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              ></path>
+            </svg>
+            <span data-i18n="open_source">Open Source</span>
+          </a>
+        </div>
+
+        <div class="header-controls-wrapper">
+          <div class="header-controls">
+            <button id="theme-toggle" class="btn-text">Light Mode</button>
+            <select id="lang-select" class="lang-select">
+              <option value="en" selected>English</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+          <small class="trans-note" data-i18n="trans_note"
+            >Translations are community-driven.</small
+          >
+        </div>
+      </header>
+
+      <main class="card main-grid">
+        <aside class="settings-col">
+          <h2 class="section-title" data-i18n="config_title">Configuration</h2>
+
+          <div class="control-row">
+            <label class="control-label" data-i18n="length">Length</label>
+            <div class="slider-wrapper">
+              <input
+                type="range"
+                id="length-range"
+                min="4"
+                max="200"
+                value="16"
+              />
+              <input
+                type="number"
+                id="length-num"
+                value="16"
+                min="4"
+                max="200"
+              />
+            </div>
+          </div>
+
+          <div class="options-grid">
+            <label class="checkbox-wrapper">
+              <input type="checkbox" id="uppercase" checked />
+              <span class="custom-check"></span>
+              <span data-i18n="include_upper">Uppercase</span>
+            </label>
+            <label class="checkbox-wrapper">
+              <input type="checkbox" id="numbers" checked />
+              <span class="custom-check"></span>
+              <span data-i18n="include_numbers">Numbers</span>
+            </label>
+            <label class="checkbox-wrapper">
+              <input type="checkbox" id="symbols" checked />
+              <span class="custom-check"></span>
+              <span data-i18n="include_symbols">Symbols</span>
+            </label>
+            <label class="checkbox-wrapper">
+              <input type="checkbox" id="exclude-ambiguous" />
+              <span class="custom-check"></span>
+              <span data-i18n="avoid_ambiguous">No Ambiguous</span>
+            </label>
+            <label class="checkbox-wrapper">
+              <input type="checkbox" id="no-start-symbol" />
+              <span class="custom-check"></span>
+              <span data-i18n="no_start_symbol">Never start with a symbol</span>
+            </label>
+          </div>
+
+          <div class="advanced-wrapper">
+            <button
+              id="toggle-advanced"
+              class="btn-link"
+              data-i18n="advanced_settings"
+            >
+              Advanced Settings ▾
+            </button>
+
+            <div id="advanced-panel" class="advanced-panel hidden">
+              <p class="hint-text" data-i18n="custom_chars_desc">
+                Customize characters:
+              </p>
+              <div class="input-group">
+                <span>a-z</span>
+                <input
+                  type="text"
+                  id="custom-lower"
+                  value="abcdefghijklmnopqrstuvwxyz"
+                />
+              </div>
+              <div class="input-group">
+                <span>A-Z</span>
+                <input
+                  type="text"
+                  id="custom-upper"
+                  value="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                />
+              </div>
+              <div class="input-group">
+                <span>0-9</span>
+                <input type="text" id="custom-numbers" value="0123456789" />
+              </div>
+              <div class="input-group">
+                <span>Sym</span>
+                <input
+                  type="text"
+                  id="custom-symbols"
+                  value="!@#$%^&*()_+-=[]{}|;:,.<>?"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="prefs-container">
+            <label class="save-prefs-label">
+              <input type="checkbox" id="save-prefs" />
+              <span data-i18n="save_prefs">Save preferences</span>
+            </label>
+          </div>
+        </aside>
+
+        <section class="output-col">
+          <div class="sticky-container">
+            <label class="section-label" data-i18n="output_title"
+              >GENERATED PASSWORD</label
+            >
+
+            <div class="password-container">
+              <div id="password-display" class="password-content"></div>
+              <button id="btn-copy" class="btn-icon" title="Copy">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path
+                    d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <div id="entropy-display" class="entropy-badge">
+              Entropy: 0 bits
+            </div>
+
+            <div class="action-footer">
+              <button
+                id="generate-btn"
+                class="btn-primary btn-large"
+                data-i18n="btn_generate"
+              >
+                GENERATE
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="app-footer">
+        &copy; 2025 XPassWords by xl1te (lighscent) |
+        <a
+          href="https://github.com/lighscent/XPassWordsWeb"
+          style="color: var(--text-muted)"
+          >GitHub Repository</a
+        >
+      </footer>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
