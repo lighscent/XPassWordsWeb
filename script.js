@@ -127,30 +127,63 @@ function generatePassword() {
         cNum = cNum.replace(amb, '');
     }
 
-    let nonSymbolPool = cLower;
-    if (document.getElementById('uppercase').checked) nonSymbolPool += cUpper;
-    if (document.getElementById('numbers').checked) nonSymbolPool += cNum;
+    const pools = [];
+    if (cLower) pools.push(cLower);
+    if (document.getElementById('uppercase').checked && cUpper) pools.push(cUpper);
+    if (document.getElementById('numbers').checked && cNum) pools.push(cNum);
 
-    let pool = nonSymbolPool;
-    if (document.getElementById('symbols').checked) pool += cSym;
+    let nonSymbolPool = pools.join('');
 
-    if (!pool) pool = "abcdef";
-    if (!nonSymbolPool) nonSymbolPool = pool;
-
-    const noStartSymbol = document.getElementById('no-start-symbol').checked;
-
-    let password = "";
-    const arr = new Uint32Array(length);
-    window.crypto.getRandomValues(arr);
-
-    for (let i = 0; i < length; i++) {
-        const currentPool = (i === 0 && noStartSymbol) ? nonSymbolPool : pool;
-        password += currentPool[arr[i] % currentPool.length];
+    if (document.getElementById('symbols').checked && cSym) {
+        pools.push(cSym);
     }
 
+    const fullPool = pools.join('') || "abcdef";
+    if (!nonSymbolPool) nonSymbolPool = fullPool;
+
+    let passwordChars = [];
+
+    // 1. Guarantee at least one char from each active pool
+    const guaranteedPools = pools.slice(0, length);
+    for (const p of guaranteedPools) {
+        const rand = new Uint32Array(1);
+        window.crypto.getRandomValues(rand);
+        passwordChars.push(p[rand[0] % p.length]);
+    }
+
+    // 2. Fill the rest
+    const remainingCount = length - passwordChars.length;
+    if (remainingCount > 0) {
+        const randArr = new Uint32Array(remainingCount);
+        window.crypto.getRandomValues(randArr);
+        for (let i = 0; i < remainingCount; i++) {
+            passwordChars.push(fullPool[randArr[i] % fullPool.length]);
+        }
+    }
+
+    // 3. Shuffle
+    for (let i = passwordChars.length - 1; i > 0; i--) {
+        const rand = new Uint32Array(1);
+        window.crypto.getRandomValues(rand);
+        const j = rand[0] % (i + 1);
+        [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
+    }
+
+    // 4. Handle "no-start-symbol"
+    const noStartSymbol = document.getElementById('no-start-symbol').checked;
+    if (noStartSymbol && cSym && cSym.includes(passwordChars[0])) {
+        for (let i = 1; i < passwordChars.length; i++) {
+            if (!cSym.includes(passwordChars[i])) {
+                [passwordChars[0], passwordChars[i]] = [passwordChars[i], passwordChars[0]];
+                break;
+            }
+        }
+    }
+
+    const password = passwordChars.join('');
     document.getElementById('password-display').textContent = password;
 
-    const entropy = Math.floor(length * Math.log2(pool.length));
+    const entropy = Math.floor(length * Math.log2(fullPool.length));
     document.getElementById('entropy-display').textContent = `Entropy: ${entropy} bits`;
 }
 
